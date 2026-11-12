@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat | YourSpace</title>
+    <link rel="stylesheet" href="{% static 'messaging/messaging.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="chat-container">
+
+    <header class="chat-header">
+        <a href="{% url 'inbox' %}" class="back-button">
+            <i class="fa-solid fa-arrow-left"></i>
+        </a>
+
+        {% with other=other_participants.first %}
+        <div class="chat-user">
+            <div class="avatar">
+                {{ other.username|first|upper }}
+            </div>
+            <div>
+                <h3>{{ other.username }}</h3>
+                <span>Conversation</span>
+            </div>
+        </div>
+        {% endwith %}
+    </header>
+
+    <main class="chat-messages" id="chatMessages">
+
+        {% for message in messages %}
+        <div class="message-row {% if message.sender == request.user %}sent{% else %}received{% endif %}">
+
+            <div class="message-bubble">
+                <p>{{ message.content }}</p>
+                <small>
+                    {{ message.created_at|date:"H:i" }}
+                    {% if message.sender == request.user %}
+                    <i class="fa-solid fa-check-double"></i>
+                    {% endif %}
+                </small>
+            </div>
+
+        </div>
+        {% empty %}
+        <div class="chat-empty">
+            <i class="fa-regular fa-comments"></i>
+            <h3>Start a conversation</h3>
+            <p>Send your first message!</p>
+        </div>
+        {% endfor %}
+
+    </main>
+
+    <form method="POST" class="message-form">
+        {% csrf_token %}
+
+        <input
+                type="text"
+                name="content"
+                placeholder="Write a message..."
+                maxlength="5000"
+                autocomplete="off"
+                required
+        >
+
+        <button type="submit">
+            <i class="fa-solid fa-paper-plane"></i>
+        </button>
+    </form>
+
+</div>
+
+<script>
+    const chatMessages = document.getElementById('chatMessages');
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+</script>
+
+</body>
+</html>

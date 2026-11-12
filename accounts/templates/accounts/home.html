@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YourSpace | Home</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<script>
+    function toggleComments(button) {
+        const section = button.closest('.comments-section');
+        const hiddenComments = section.querySelectorAll('.hidden-comment');
+
+        const isHidden = hiddenComments[0].style.display !== 'block';
+
+        hiddenComments.forEach(comment => {
+            comment.style.display = isHidden ? 'block' : 'none';
+        });
+
+        button.textContent = isHidden
+            ? 'Hide comments'
+            : 'View all comments';
+    }
+</script>
+
+<body>
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <h1 class="logo">yourspace.</h1>
+
+        <nav class="navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'notifications' %}">Notifications</a>
+            <a href="{% url 'inbox' %}">Messages</a>
+            <a href="{% url 'profile' %}">Profile</a>
+        </nav>
+
+        <a href="{% url 'create_post' %}" class="create-button">
+            Create Post
+        </a>
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+
+    </aside>
+
+    <main class="feed">
+
+        <header class="feed-header">
+            <h2>Home</h2>
+            <p>Welcome back, {{ request.user.username }}!</p>
+        </header>
+
+        <section class="posts-container">
+
+            {% for post in posts %}
+
+            <article class="post-card">
+
+                <div class="post-header">
+                    <div class="author-info">
+
+                        {% if post.author.avatar %}
+                        <img src="{{ post.author.avatar.url }}" alt="User avatar" class="avatar">
+                        {% else %}
+                        <div class="avatar-placeholder">
+                            {{ post.author.username|first|upper }}
+                        </div>
+                        {% endif %}
+
+                        <h3>
+                            <a href="{% url 'user_profile' post.author.username %}">
+                                {{ post.author.username }}
+                            </a>
+                        </h3>
+
+                    </div>
+
+                    <div class="post-header-actions">
+                        <small>{{ post.created_at }}</small>
+
+                        {% if post.author == request.user %}
+                        <form method="POST" action="{% url 'delete_post' post.id %}"
+                              onsubmit="return confirm('Are you sure you want to delete this post?');">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-post-btn">
+                                <i class="fa-solid fa-trash"></i>
+                                Delete
+                            </button>
+                        </form>
+                        {% endif %}
+                    </div>
+                </div>
+                <p>{{ post.caption }}</p>
+
+                {% if post.image %}
+                <img src="{{ post.image.url }}" alt="Post image">
+                {% endif %}
+
+                <div class="post-reactions">
+
+                    {% with current_reaction=post.user_reactions.0 %}
+
+                    <form method="POST" action="{% url 'reaction' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="reaction_type" value="like">
+
+                        <button type="submit"
+                                class="{% if current_reaction and current_reaction.reaction_type == 'like' %}active-like{% endif %}">
+                            <i class="fa-solid fa-thumbs-up"></i>
+                            {{ post.likes_count }}
+                        </button>
+                    </form>
+
+                    <form method="POST" action="{% url 'reaction' post.id %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="reaction_type" value="dislike">
+
+                        <button type="submit"
+                                class="{% if current_reaction and current_reaction.reaction_type == 'dislike' %}active-dislike{% endif %}">
+                            <i class="fa-solid fa-thumbs-down"></i>
+                            {{ post.dislikes_count }}
+                        </button>
+                    </form>
+
+                    {% endwith %}
+
+                </div>
+
+                <div class="comments-section">
+
+                    <h4>Comments ({{ post.comments.count }})</h4>
+
+                    <div class="comments-list">
+
+                        {% for comment in post.comments.all %}
+
+                        <div class="comment {% if forloop.counter > 2 %}hidden-comment{% endif %}">
+
+                            <div class="comment-header">
+                                <strong>{{ comment.user.username }}</strong>
+
+                                {% if comment.user == request.user %}
+                                <form method="POST" action="{% url 'delete_comment' comment.id %}">
+                                    {% csrf_token %}
+                                    <button type="submit" class="delete-comment">
+                                        <i class="fa-solid fa-trash"></i>
+                                    </button>
+                                </form>
+                                {% endif %}
+                            </div>
+
+                            <p>{{ comment.content }}</p>
+                            <small>{{ comment.created_at }}</small>
+
+                        </div>
+
+                        {% empty %}
+
+                        <p class="no-comments">No comments yet.</p>
+
+                        {% endfor %}
+
+                    </div>
+
+                    {% if post.comments.count > 2 %}
+                    <button type="button" class="toggle-comments" onclick="toggleComments(this)">
+                        View all comments
+                    </button>
+                    {% endif %}
+
+                </div>
+
+                <form method="POST" action="{% url 'add_comment' post.id %}" class="comment-form">
+                    {% csrf_token %}
+
+                    <textarea name="content"
+                              placeholder="Write a comment..."
+                              maxlength="500"
+                              required></textarea>
+
+                    <button type="submit">
+                        <i class="fa-solid fa-paper-plane"></i>
+                        Comment
+                    </button>
+                </form>
+
+            </article>
+
+            {% empty %}
+
+            <p>No posts yet. Be the first to share something!</p>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+    <aside class="right-sidebar">
+        <h3>Discover</h3>
+        <p>Find new people and ideas.</p>
+    </aside>
+
+</div>
+</body>
+</html>

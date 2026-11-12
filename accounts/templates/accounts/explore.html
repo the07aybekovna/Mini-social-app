@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Explore | YourSpace</title>
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+
+<div class="app-container">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+
+        <h1 class="logo">yourspace.</h1>
+
+        <nav class="navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'notifications' %}">Notifications</a>
+            <a href="{% url 'inbox' %}">Messages</a>
+            <a href="{% url 'profile' %}">Profile</a>
+        </nav>
+
+        <a href="{% url 'create_post' %}" class="create-button">
+            Create Post
+        </a>
+
+    </aside>
+
+
+    <main class="feed">
+
+        <header class="feed-header">
+            <h2>Explore</h2>
+            <p>Discover people and connect with new ideas.</p>
+        </header>
+
+
+        <!-- Search -->
+        <form method="GET" action="{% url 'explore' %}" class="explore-search">
+
+            <i class="fa-solid fa-magnifying-glass"></i>
+
+            <input
+                type="text"
+                name="q"
+                placeholder="Search people..."
+                value="{{ search_query }}"
+            >
+
+            <button type="submit">Search</button>
+
+        </form>
+
+
+        <!-- Users -->
+        <section class="explore-users">
+
+            {% for person in users %}
+
+            <article class="user-card">
+
+                <div class="explore-avatar">
+
+                    {% if person.avatar %}
+                        <img src="{{ person.avatar.url }}" alt="Avatar">
+                    {% else %}
+                        <div class="avatar-placeholder">
+                            {{ person.username|first|upper }}
+                        </div>
+                    {% endif %}
+
+                </div>
+
+
+                <div class="user-card-info">
+
+                    <h3>
+                        <a href="{% url 'user_profile' person.username %}">
+                            {{ person.username }}
+                        </a>
+                    </h3>
+
+                    <p>
+                        {% if person.bio %}
+                            {{ person.bio|truncatechars:90 }}
+                        {% else %}
+                            No bio yet.
+                        {% endif %}
+                    </p>
+
+                    <small>
+                        <i class="fa-solid fa-users"></i>
+                        {{ person.followers_count }} followers
+                    </small>
+
+                </div>
+
+
+                <div class="user-card-actions">
+
+                    {% if person.id in following_ids %}
+
+                        <form method="POST" action="{% url 'follow_toggle' person.username %}">
+                            {% csrf_token %}
+                            <button type="submit" class="following-btn">
+                                Following
+                            </button>
+                        </form>
+
+                    {% else %}
+
+                        <form method="POST" action="{% url 'follow_toggle' person.username %}">
+                            {% csrf_token %}
+                            <button type="submit" class="follow-btn">
+                                <i class="fa-solid fa-plus"></i>
+                                Follow
+                            </button>
+                        </form>
+
+                    {% endif %}
+
+                </div>
+
+            </article>
+
+            {% empty %}
+
+            <div class="explore-empty">
+                <i class="fa-solid fa-users"></i>
+                <h3>No users found</h3>
+                <p>Try searching with another username.</p>
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+
+    <aside class="right-sidebar">
+
+        <h3>Discover</h3>
+        <p>Find people, share ideas and build connections.</p>
+
+    </aside>
+
+</div>
+
+</body>
+</html>

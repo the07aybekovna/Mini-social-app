@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>YourSpace | Notifications</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+
+<body>
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <h1 class="logo">yourspace.</h1>
+
+        <nav class="navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'notifications' %}" class="active">Notifications</a>
+            <a href="{% url 'inbox' %}">Messages</a>
+            <a href="{% url 'profile' %}">Profile</a>
+        </nav>
+
+        <a href="{% url 'create_post' %}" class="create-button">
+            Create Post
+        </a>
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+
+    </aside>
+
+    <main class="feed">
+
+        <header class="feed-header">
+            <h2>Notifications</h2>
+            <p>You have {{ unread_count }} unread notifications.</p>
+        </header>
+
+        <section class="notifications-list">
+
+            {% for notification in notifications %}
+
+            <div class="notification-card {% if not notification.is_read %}unread{% endif %}">
+
+                <div class="notification-avatar">
+
+                    {% if notification.sender.avatar %}
+                    <img src="{{ notification.sender.avatar.url }}" alt="Avatar">
+                    {% else %}
+                    {{ notification.sender.username|first|upper }}
+                    {% endif %}
+
+                </div>
+
+                <div class="notification-content">
+
+                    <p>
+                        <a href="{% url 'user_profile' notification.sender.username %}">
+                            {{ notification.sender.username }}
+                        </a>
+
+                        {% if notification.notification_type == 'follow' %}
+                        started following you.
+                        {% elif notification.notification_type == 'like' %}
+                        liked your post.
+                        {% elif notification.notification_type == 'dislike' %}
+                        disliked your post.
+                        {% elif notification.notification_type == 'comment' %}
+                        commented on your post.
+                        {% endif %}
+                    </p>
+
+                    <small>{{ notification.created_at|timesince }} ago</small>
+
+                </div>
+
+                {% if not notification.is_read %}
+                <span class="unread-dot"></span>
+                {% endif %}
+
+            </div>
+
+            {% empty %}
+
+            <div class="notifications-empty">
+                <i class="fa-regular fa-bell"></i>
+                <h3>No notifications yet</h3>
+                <p>When someone interacts with you, you'll see it here.</p>
+            </div>
+
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+    <aside class="right-sidebar">
+        <h3>YourSpace</h3>
+        <p>Stay connected with your community.</p>
+    </aside>
+
+</div>
+</body>
+</html>

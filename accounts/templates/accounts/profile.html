@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ profile_user.username }} | YourSpace</title>
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+
+        <h1 class="logo">yourspace.</h1>
+
+        <nav class="navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'notifications' %}">Notifications</a>
+            <a href="{% url 'inbox' %}">Messages</a>
+            <a href="{% url 'profile' %}">Profile</a>
+        </nav>
+
+        <a href="{% url 'create_post' %}" class="create-button">
+            Create Post
+        </a>
+
+        <form method="POST" action="{% url 'logout' %}">
+            {% csrf_token %}
+            <button type="submit">Log out</button>
+        </form>
+
+    </aside>
+
+    <main class="feed">
+
+        <section class="profile-card">
+
+            {% if profile_user.avatar %}
+            <img src="{{ profile_user.avatar.url }}" alt="Profile avatar" class="profile-avatar">
+            {% else %}
+            <div class="profile-avatar-placeholder">
+                {{ profile_user.username|first|upper }}
+            </div>
+            {% endif %}
+
+            <h2>{{ profile_user.username }}</h2>
+
+            <p>{{ profile_user.bio|default:"No bio yet." }}</p>
+
+            {% if request.user != profile_user %}
+
+            <div class="profile-actions">
+
+                <form method="POST" action="{% url 'follow_toggle' profile_user.username %}">
+                    {% csrf_token %}
+
+                    {% if is_following %}
+                    <button type="submit">Unfollow</button>
+                    {% else %}
+                    <button type="submit">Follow</button>
+                    {% endif %}
+                </form>
+
+                <form method="POST" action="{% url 'start_chat' profile_user.id %}">
+                    {% csrf_token %}
+
+                    <button type="submit" class="message-button">
+                        <i class="fa-solid fa-envelope"></i>
+                        Message
+                    </button>
+                </form>
+
+            </div>
+
+            {% else %}
+
+            <a href="{% url 'edit_profile' %}" class="edit-profile-btn">
+                <i class="fa-solid fa-pen"></i>
+                Edit Profile
+            </a> {% endif %}
+
+            <div class="profile-stats">
+
+                <div>
+                    <strong>{{ posts.count }}</strong>
+                    <p>Posts</p>
+                </div>
+
+                <a href="{% url 'followers_list' profile_user.username %}">
+                    <strong>{{ followers_count }}</strong>
+                    <p>Followers</p>
+                </a>
+
+                <a href="{% url 'following_list' profile_user.username %}">
+                    <strong>{{ following_count }}</strong>
+                    <p>Following</p>
+                </a>
+
+            </div>
+
+        </section>
+
+        <section class="profile-posts">
+
+            <h2>Your Posts</h2>
+
+            <div class="posts-container">
+
+                {% for post in posts %}
+
+                <article class="post-card">
+
+                    <p>{{ post.caption }}</p>
+
+                    {% if post.image %}
+                    <img src="{{ post.image.url }}" alt="Post image">
+                    {% endif %}
+
+                </article>
+
+                {% empty %}
+
+                <p>You haven't shared anything yet.</p>
+
+                {% endfor %}
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <aside class="right-sidebar">
+        <h3>YourSpace Profile</h3>
+        <p>Your personal space to share ideas and moments.</p>
+    </aside>
+
+</div>
+
+</body>
+</html>

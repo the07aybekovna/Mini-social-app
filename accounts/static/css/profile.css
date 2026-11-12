@@ -1,0 +1,123 @@
+.follow-list-header {
+    margin-bottom: 25px;
+}
+
+.follow-list-header > a {
+    display: inline-block;
+    margin-bottom: 20px;
+    color: var(--purple);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.follow-list-header h2 {
+    margin: 0 0 6px;
+    font-size: 26px;
+    color: #202033;
+}
+
+.follow-list-header p {
+    margin: 0;
+    color: var(--muted);
+    font-size: 14px;
+}
+
+.follow-list {
+    display: flex;
+    flex-direction: column;
+    background: #ffffff;
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: var(--shadow);
+}
+
+.follow-user {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 16px 20px;
+    text-decoration: none;
+    color: inherit;
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s ease;
+}
+
+.follow-user:last-child {
+    border-bottom: none;
+}
+
+.follow-user:hover {
+    background: #f8f7ff;
+}
+
+.follow-user img,
+.follow-avatar-placeholder {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.follow-user img {
+    object-fit: cover;
+}
+
+.follow-avatar-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #eee9ff;
+    color: var(--purple);
+    font-size: 19px;
+    font-weight: 700;
+}
+
+.follow-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    min-width: 0;
+}
+
+.follow-user-info p {
+    font-size: 14px;
+    color: #202033;
+}
+
+.follow-user-info p {
+    color: var(--muted);
+    font-size: 12px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.empty-follow-list {
+    padding: 30px;
+    text-align: center;
+    color: var(--muted);
+}
+.profile-stats > a {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    text-decoration: none;
+    color: inherit;
+    transition: 0.2s ease;
+}
+
+.profile-stats > a:hover strong {
+    color: var(--purple);
+}
+
+.profile-stats > a strong {
+    font-size: 23px;
+    color: #202033;
+}
+
+.profile-stats > a span {
+    color: var(--muted);
+    font-size: 13px;
+}

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | YourSpace</title>
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="app-container">
+
+    <aside class="sidebar">
+        <h1 class="logo">yourspace.</h1>
+
+        <nav class="navigation">
+            <a href="{% url 'home' %}">Home</a>
+            <a href="{% url 'explore' %}">Explore</a>
+            <a href="{% url 'notifications' %}">Notifications</a>
+            <a href="{% url 'inbox' %}">Messages</a>
+            <a href="{% url 'profile' %}">Profile</a>
+        </nav>
+    </aside>
+
+    <main class="feed">
+
+        <section class="edit-profile-container">
+
+            <div class="edit-profile-header">
+                <h2>Edit Profile</h2>
+                <p>Update your personal information.</p>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data" class="edit-profile-form">
+                {% csrf_token %}
+
+                <div class="form-group">
+                    <label for="{{ form.username.id_for_label }}">Username</label>
+                    {{ form.username }}
+                    {{ form.username.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.bio.id_for_label }}">Bio</label>
+                    {{ form.bio }}
+                    {{ form.bio.errors }}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.avatar.id_for_label }}">Profile Picture</label>
+                    {{ form.avatar }}
+                    {{ form.avatar.errors }}
+                </div>
+
+                {% if form.non_field_errors %}
+                    <div class="form-errors">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                <div class="edit-profile-actions">
+                    <a href="{% url 'profile' %}" class="cancel-button">Cancel</a>
+
+                    <button type="submit" class="save-button">
+                        <i class="fa-solid fa-check"></i>
+                        Save Changes
+                    </button>
+                </div>
+
+            </form>
+
+        </section>
+
+    </main>
+
+    <aside class="right-sidebar">
+        <h3>YourSpace</h3>
+        <p>Make your profile reflect who you are.</p>
+    </aside>
+
+</div>
+
+</body>
+</html>

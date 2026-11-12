@@ -1,0 +1,146 @@
+{% load static %}
+<title>Register | YourSpace</title>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<section class="visual-panel">
+
+    <div class="brand">your<span>space</span>.</div>
+
+    <div class="network">
+
+        <svg viewBox="0 0 400 300" class="network-svg">
+
+            <g class="connections">
+                <path d="M200 150 L100 75 L45 75" />
+                <path d="M200 150 L300 75 L355 75" />
+                <path d="M200 150 L100 225 L45 225" />
+                <path d="M200 150 L300 225 L355 225" />
+                <path d="M200 150 L200 45" />
+                <path d="M200 150 L200 255" />
+                <path d="M100 75 L100 225" />
+                <path d="M300 75 L300 225" />
+            </g>
+
+            <circle cx="200" cy="150" r="34" class="center-glow"/>
+            <circle cx="200" cy="150" r="25" class="center-node"/>
+
+            <path d="M188 143 L200 136 L212 143 L200 150 Z
+                     M188 150 L200 157 L212 150
+                     M188 157 L200 164 L212 157"
+                  class="center-icon"/>
+
+            <g class="nodes">
+                <circle cx="100" cy="75" r="13"/>
+                <circle cx="300" cy="75" r="13"/>
+                <circle cx="100" cy="225" r="13"/>
+                <circle cx="300" cy="225" r="13"/>
+                <circle cx="200" cy="45" r="13"/>
+                <circle cx="200" cy="255" r="13"/>
+                <circle cx="45" cy="75" r="10"/>
+                <circle cx="355" cy="75" r="10"/>
+                <circle cx="45" cy="225" r="10"/>
+                <circle cx="355" cy="225" r="10"/>
+            </g>
+
+            <g class="node-labels">
+                <text x="100" y="80">A</text>
+                <text x="300" y="80">✦</text>
+                <text x="100" y="230">✧</text>
+                <text x="300" y="230">◈</text>
+                <text x="200" y="50">+</text>
+                <text x="200" y="260">⌘</text>
+            </g>
+
+        </svg>
+
+    </div>
+
+    <div class="indicators">
+        <span class="active"></span>
+        <span></span>
+        <span></span>
+    </div>
+
+    <div class="visual-content">
+        <h2>Empower your ideas with your own space.</h2>
+
+        <p>
+            Connect with people, share your thoughts
+            and explore new perspectives in a space
+            designed for expression.
+        </p>
+    </div>
+
+    <div class="visual-footer">
+        CREATE · CONNECT · EXPRESS
+    </div>
+
+</section>
+
+<section class="form-panel">
+
+    <div class="form-container">
+
+        <div class="form-heading">
+            <h1>Register</h1>
+
+            <p>
+                Create your account and become part
+                of a community where every voice matters.
+            </p>
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {% for error in form.non_field_errors %}
+                <p class="error-message">{{ error }}</p>
+            {% endfor %}
+
+            {% for field in form %}
+
+                <div class="form-group">
+
+                    {{ field.label_tag }}
+
+                    {{ field }}
+
+                    {% for error in field.errors %}
+                        <small class="error-message">{{ error }}</small>
+                    {% endfor %}
+
+                    {% if field.help_text %}
+                        <small class="help-text">
+                            {{ field.help_text|safe }}
+                        </small>
+                    {% endif %}
+
+                </div>
+
+            {% endfor %}
+
+            <button type="submit" class="register-btn">
+                Register now
+                <span>→</span>
+            </button>
+
+            <p class="terms">
+                By clicking register now, you agree to our
+                <a href="#">Terms of Service</a> and
+            <a href="#">Privacy Policy</a>.
+            </p>
+
+        </form>
+
+        <div class="login-link">
+            Already have an account? <a href="#">Log in</a>
+        </div>
+
+    </div>
+
+</section>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Messages | YourSpace</title>
+    <link rel="stylesheet" href="{% static 'messaging/messaging.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+
+<div class="messages-container">
+
+    <aside class="messages-sidebar">
+        <a href="{% url 'home' %}" class="logo">YourSpace</a>
+
+        <nav>
+            <a href="{% url 'home' %}"><i class="fa-solid fa-house"></i> Home</a>
+            <a href="#"><i class="fa-solid fa-compass"></i> Explore</a>
+            <a href="#"><i class="fa-solid fa-bell"></i> Notifications</a>
+            <a href="{% url 'inbox' %}" class="active"><i class="fa-solid fa-envelope"></i> Messages</a>
+            <a href="{% url 'profile' %}"><i class="fa-solid fa-user"></i> Profile</a>
+        </nav>
+    </aside>
+
+    <main class="inbox-main">
+
+        <div class="inbox-header">
+            <div>
+                <h1>Messages</h1>
+                <p>Your private conversations</p>
+            </div>
+        </div>
+
+        <form method="GET" action="{% url 'inbox' %}" class="search-form">
+            <i class="fa-solid fa-magnifying-glass"></i>
+            <input
+                    type="text"
+                    name="q"
+                    placeholder="Search people by username..."
+                    value="{{ search_query }}"
+            >
+            <button type="submit">Search</button>
+        </form>
+
+        {% if search_query %}
+        <section class="search-results">
+            <h3>People</h3>
+
+            {% for person in users %}
+            <div class="user-result">
+                <div class="user-info">
+                    <div class="avatar">
+                        {{ person.username|first|upper }}
+                    </div>
+                    <span>{{ person.username }}</span>
+                </div>
+
+                <form method="POST" action="{% url 'start_chat' person.id %}">
+                    {% csrf_token %}
+                    <button type="submit" class="message-button">
+                        Message
+                    </button>
+                </form>
+            </div>
+            {% empty %}
+            <p class="empty-message">No users found.</p>
+            {% endfor %}
+        </section>
+        {% endif %}
+
+        <section class="conversation-section">
+            <h3>Your conversations</h3>
+
+            {% for conversation in conversations %}
+            <a href="{% url 'chat' conversation.id %}" class="conversation-card">
+
+                {% for participant in conversation.participants.all %}
+                {% if participant != request.user %}
+                <div class="avatar">
+                    {{ participant.username|first|upper }}
+                </div>
+
+                <div class="conversation-info">
+                    <h4>{{ participant.username }}</h4>
+
+                    {% with last_message=conversation.messages.last %}
+                    {% if last_message %}
+                    <p>
+                        {% if last_message.sender == request.user %}
+                        You:
+                        {% endif %}
+                        {{ last_message.content|truncatechars:45 }}
+                    </p>
+                    {% else %}
+                    <p>Start your conversation</p>
+                    {% endif %}
+                    {% endwith %}
+                </div>
+                {% endif %}
+                {% endfor %}
+
+                <i class="fa-solid fa-chevron-right arrow"></i>
+
+            </a>
+            {% empty %}
+            <div class="empty-state">
+                <i class="fa-regular fa-paper-plane"></i>
+                <h3>No conversations yet</h3>
+                <p>Search for someone and start a conversation.</p>
+            </div>
+            {% endfor %}
+
+        </section>
+
+    </main>
+
+</div>
+
+</body>
+</html>

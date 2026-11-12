@@ -1,0 +1,138 @@
+{% load static %}
+<title>Login | YourSpace</title>
+
+<link rel="stylesheet" href="{% static 'css/style.css' %}">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<section class="visual-panel">
+
+    <div class="brand">your<span>space</span>.</div>
+
+    <div class="network">
+        <svg viewBox="0 0 400 300" class="network-svg">
+            <g class="connections">
+                <path d="M200 150 L100 75 L45 75" />
+                <path d="M200 150 L300 75 L355 75" />
+                <path d="M200 150 L100 225 L45 225" />
+                <path d="M200 150 L300 225 L355 225" />
+                <path d="M200 150 L200 45" />
+                <path d="M200 150 L200 255" />
+                <path d="M100 75 L100 225" />
+                <path d="M300 75 L300 225" />
+            </g>
+
+            <circle cx="200" cy="150" r="34" class="center-glow"/>
+            <circle cx="200" cy="150" r="25" class="center-node"/>
+
+            <path d="M188 143 L200 136 L212 143 L200 150 Z
+                     M188 150 L200 157 L212 150
+                     M188 157 L200 164 L212 157"
+                  class="center-icon"/>
+
+            <g class="nodes">
+                <circle cx="100" cy="75" r="13"/>
+                <circle cx="300" cy="75" r="13"/>
+                <circle cx="100" cy="225" r="13"/>
+                <circle cx="300" cy="225" r="13"/>
+                <circle cx="200" cy="45" r="13"/>
+                <circle cx="200" cy="255" r="13"/>
+                <circle cx="45" cy="75" r="10"/>
+                <circle cx="355" cy="75" r="10"/>
+                <circle cx="45" cy="225" r="10"/>
+                <circle cx="355" cy="225" r="10"/>
+            </g>
+
+            <g class="node-labels">
+                <text x="100" y="80">A</text>
+                <text x="300" y="80">✦</text>
+                <text x="100" y="230">✧</text>
+                <text x="300" y="230">◈</text>
+                <text x="200" y="50">+</text>
+                <text x="200" y="260">⌘</text>
+            </g>
+        </svg>
+    </div>
+
+    <div class="indicators">
+        <span></span>
+        <span class="active"></span>
+        <span></span>
+    </div>
+
+    <div class="visual-content">
+        <h2>Welcome back to your space.</h2>
+
+        <p>
+            Your ideas, your connections,
+            your community. Everything starts here.
+        </p>
+    </div>
+
+    <div class="visual-footer">
+        CREATE · CONNECT · EXPRESS
+    </div>
+
+</section>
+
+<section class="form-panel">
+
+    <div class="form-container">
+
+        <div class="form-heading">
+            <h1>Welcome back!</h1>
+
+            <p>
+                Log in to continue your journey
+                and connect with your community.
+            </p>
+        </div>
+
+        <form method="POST">
+
+            {% csrf_token %}
+
+            {% if form.errors %}
+                <p class="error-message">
+                    Invalid username or password. Please try again.
+                </p>
+            {% endif %}
+
+            <div class="form-group">
+                <label for="id_username">Username</label>
+                <input
+                    type="text"
+                    name="username"
+                    id="id_username"
+                    placeholder="Enter your username"
+                    required
+                >
+            </div>
+
+            <div class="form-group">
+                <label for="id_password">Password</label>
+                <input
+                    type="password"
+                    name="password"
+                    id="id_password"
+                    placeholder="Enter your password"
+                    required
+                >
+            </div>
+
+            <button type="submit" class="register-btn">
+                Log in
+                <span>→</span>
+            </button>
+
+        </form>
+
+        <div class="login-link">
+            Don't have an account?
+            <a href="{% url 'register' %}">Create account</a>
+        </div>
+
+    </div>
+
+</section>

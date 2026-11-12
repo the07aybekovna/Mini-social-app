@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Post | YourSpace</title>
+    <link rel="stylesheet" href="{% static 'css/create-post.css' %}">
+</head>
+<body>
+
+<div class="create-page">
+
+    <header class="top-bar">
+        <a href="{% url 'home' %}" class="logo">yourspace<span>.</span></a>
+        <a href="{% url 'home' %}" class="back-link">
+            <i>←</i> Back to Home
+        </a>
+    </header>
+
+    <main class="create-container">
+
+        <div class="page-heading">
+            <span class="eyebrow">SHARE YOUR MOMENT</span>
+            <h1>Create something <span>beautiful.</span></h1>
+            <p>Share your thoughts, experiences and moments with your community.</p>
+        </div>
+
+        <div class="create-card">
+
+            <div class="card-header">
+                <div class="header-icon">✦</div>
+                <div>
+                    <h2>Create a post</h2>
+                    <p>What's happening in your world?</p>
+                </div>
+            </div>
+
+            <form method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+
+                {% if form.errors %}
+                    <div class="form-errors">
+                        Please check the information you entered.
+                    </div>
+                {% endif %}
+
+                <div class="form-fields">
+                    {{ form.as_p }}
+                </div>
+
+                <div class="form-footer">
+                    <a href="{% url 'home' %}" class="cancel-btn">Cancel</a>
+                    <button type="submit" class="publish-btn">
+                        Publish Post <span>→</span>
+                    </button>
+                </div>
+            </form>
+
+        </div>
+
+        <p class="bottom-note">YourSpace · A place to be yourself.</p>
+
+    </main>
+
+</div>
+
+</body>
+</html>

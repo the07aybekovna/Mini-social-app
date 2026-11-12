@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ list_type }} | YourSpace</title>
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/profile.css' %}">
+</head>
+<body>
+
+    <div class="app-container">
+
+        <aside class="sidebar">
+            <h1>yourspace.</h1>
+
+            <nav class="navigation">
+                <a href="{% url 'home' %}">Home</a>
+                <a href="{% url 'profile' %}">Profile</a>
+                <a href="{% url 'create_post' %}">Create Post</a>
+            </nav>
+        </aside>
+
+        <main class="feed">
+
+            <div class="follow-list-header">
+                <a href="{% url 'user_profile' profile_user.username %}">← Back to profile</a>
+                <h2>{{ list_type }}</h2>
+                <p>{{ profile_user.username }}</p>
+            </div>
+
+            <div class="follow-list">
+
+                {% for follow in follows %}
+
+                    {% if list_type == 'Followers' %}
+                        {% with person=follow.follower %}
+                            <a href="{% url 'user_profile' person.username %}" class="follow-user">
+                                {% if person.avatar %}
+                                    <img src="{{ person.avatar.url }}" alt="{{ person.username }}">
+                                {% else %}
+                                    <div class="follow-avatar-placeholder">
+                                        {{ person.username|first|upper }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="follow-user-info">
+                                    <strong>{{ person.username }}</strong>
+                                    <span>{{ person.bio|default:"No bio yet." }}</span>
+                                </div>
+                            </a>
+                        {% endwith %}
+                    {% else %}
+                        {% with person=follow.following %}
+                            <a href="{% url 'user_profile' person.username %}" class="follow-user">
+                                {% if person.avatar %}
+                                    <img src="{{ person.avatar.url }}" alt="{{ person.username }}">
+                                {% else %}
+                                    <div class="follow-avatar-placeholder">
+                                        {{ person.username|first|upper }}
+                                    </div>
+                                {% endif %}
+
+                                <div class="follow-user-info">
+                                    <strong>{{ person.username }}</strong>
+                                    <span>{{ person.bio|default:"No bio yet." }}</span>
+                                </div>
+                            </a>
+                        {% endwith %}
+                    {% endif %}
+
+                {% empty %}
+                    <p class="empty-follow-list">No users found yet.</p>
+                {% endfor %}
+
+            </div>
+
+        </main>
+
+        <aside class="right-sidebar"></aside>
+
+    </div>
+
+</body>
+</html>
