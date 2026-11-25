@@ -4,6 +4,7 @@ from django.views.decorators.http import require_POST
 from .forms import PostForm, CommentForm
 from .models import Post, Reaction, Comment
 from accounts.models import Notification
+from django.http import JsonResponse
 
 
 @login_required(login_url='/accounts/login/')
@@ -21,6 +22,7 @@ def create_post(request):
 
     return render(request, 'posts/create_post.html', {'form': form})
 
+
 @login_required
 @require_POST
 def reaction_view(request, post_id):
@@ -29,7 +31,10 @@ def reaction_view(request, post_id):
     reaction_type = request.POST.get('reaction_type')
 
     if reaction_type not in ['like', 'dislike']:
-        return redirect('home')
+        return JsonResponse({
+            'success': False,
+            'error': 'Invalid reaction type'
+        }, status=400)
 
     reaction = Reaction.objects.filter(
         user=request.user,
@@ -39,7 +44,6 @@ def reaction_view(request, post_id):
     if reaction:
         if reaction.reaction_type == reaction_type:
             reaction.delete()
-            return redirect('home')
         else:
             reaction.reaction_type = reaction_type
             reaction.save()
@@ -59,6 +63,7 @@ def reaction_view(request, post_id):
         )
 
     return redirect('home')
+
 
 @login_required(login_url='/accounts/login/')
 @require_POST
@@ -82,6 +87,7 @@ def add_comment(request, post_id):
 
     return redirect('home')
 
+
 @login_required(login_url='/accounts/login/')
 @require_POST
 def delete_comment(request, comment_id):
@@ -94,6 +100,7 @@ def delete_comment(request, comment_id):
     comment.delete()
 
     return redirect('home')
+
 
 @login_required(login_url='/accounts/login/')
 @require_POST

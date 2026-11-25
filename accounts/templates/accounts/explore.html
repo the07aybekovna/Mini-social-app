@@ -5,9 +5,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
     <title>Explore | YourSpace</title>
 
-    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/home.css' %}?v=2">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 </head>
 
@@ -15,7 +16,6 @@
 
 <div class="app-container">
 
-    <!-- Sidebar -->
     <aside class="sidebar">
 
         <h1 class="logo">yourspace.</h1>
@@ -43,103 +43,368 @@
         </header>
 
 
-        <!-- Search -->
-        <form method="GET" action="{% url 'explore' %}" class="explore-search">
+        <form
+            method="GET"
+            action="{% url 'explore' %}"
+            class="advanced-search-form"
+            id="advancedSearchForm"
+        >
 
-            <i class="fa-solid fa-magnifying-glass"></i>
+            <div class="search-section">
 
-            <input
-                type="text"
-                name="q"
-                placeholder="Search people..."
-                value="{{ search_query }}"
-            >
+                <h3>
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    Search People
+                </h3>
 
-            <button type="submit">Search</button>
+                <label for="searchInput">
+                    Name or Username
+                </label>
+
+                <input
+                    type="text"
+                    name="q"
+                    id="searchInput"
+                    placeholder="Enter a name or username..."
+                    value="{{ search_query }}"
+                    autocomplete="off"
+                >
+
+                <small>
+                    Find people using their username, first name or last name.
+                </small>
+
+            </div>
+
+
+            <div class="search-section">
+
+                <h3>
+                    <i class="fa-solid fa-users"></i>
+                    Followers
+                </h3>
+
+                <p>Filter users by their number of followers.</p>
+
+                <div class="filter-row">
+
+                    <div class="filter-field">
+
+                        <label for="minFollowers">
+                            Minimum Followers
+                        </label>
+
+                        <input
+                            type="number"
+                            name="min_followers"
+                            id="minFollowers"
+                            placeholder="Example: 10"
+                            min="0"
+                            value="{{ min_followers }}"
+                        >
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="maxFollowers">
+                            Maximum Followers
+                        </label>
+
+                        <input
+                            type="number"
+                            name="max_followers"
+                            id="maxFollowers"
+                            placeholder="Example: 500"
+                            min="0"
+                            value="{{ max_followers }}"
+                        >
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="search-section">
+
+                <h3>
+                    <i class="fa-solid fa-calendar-days"></i>
+                    Registration Date
+                </h3>
+
+                <p>Find users based on when they joined YourSpace.</p>
+
+                <div class="filter-row">
+
+                    <div class="filter-field">
+
+                        <label for="joinedAfter">
+                            Joined After
+                        </label>
+
+                        <input
+                            type="date"
+                            name="joined_after"
+                            id="joinedAfter"
+                            value="{{ joined_after }}"
+                        >
+
+                        <small>
+                            Users who joined on or after this date.
+                        </small>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="joinedBefore">
+                            Joined Before
+                        </label>
+
+                        <input
+                            type="date"
+                            name="joined_before"
+                            id="joinedBefore"
+                            value="{{ joined_before }}"
+                        >
+
+                        <small>
+                            Users who joined on or before this date.
+                        </small>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="search-section">
+
+                <h3>
+                    <i class="fa-solid fa-user-check"></i>
+                    Profile Information
+                </h3>
+
+                <div class="filter-row">
+
+                    <div class="filter-field">
+
+                        <label for="hasAvatar">
+                            Profile Photo
+                        </label>
+
+                        <select name="has_avatar" id="hasAvatar">
+
+                            <option value="" {% if not has_avatar %}selected{% endif %}>
+                                All Profiles
+                            </option>
+
+                            <option value="yes" {% if has_avatar == yes %}selected{% endif %}>
+                                Has Profile Photo
+                            </option>
+
+                        </select>
+
+                    </div>
+
+
+                    <div class="filter-field">
+
+                        <label for="hasBio">
+                            Biography
+                        </label>
+
+                        <select name="has_bio" id="hasBio">
+
+                            <option value="" {% if not has_bio %}selected{% endif %}>
+                                All Profiles
+                            </option>
+
+                            <option value="yes" {% if has_bio == yes %}selected{% endif %}>
+                                Has Bio
+                            </option>
+
+                        </select>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <div class="search-section">
+
+                <h3>
+                    <i class="fa-solid fa-arrow-down-wide-short"></i>
+                    Sort Results
+                </h3>
+
+                <label for="sortBy">
+                    Order users by
+                </label>
+
+                <select name="sort" id="sortBy">
+
+                    <option value="newest" {% if sort_by == newest %}selected{% endif %}>
+                        Newest Members
+                    </option>
+
+                    <option value="oldest" {% if sort_by == oldest %}selected{% endif %}>
+                        Oldest Members
+                    </option>
+
+                    <option value="followers" {% if sort_by == followers %}selected{% endif %}>
+                        Most Followers
+                    </option>
+
+                    <option value="username" {% if sort_by == username %}selected{% endif %}>
+                        Username (A–Z)
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="search-actions">
+
+                <button type="submit" class="apply-filter-btn">
+                    <i class="fa-solid fa-filter"></i>
+                    Apply Filters
+                </button>
+
+                <a href="{% url 'explore' %}" class="clear-filter-btn">
+                    <i class="fa-solid fa-rotate-left"></i>
+                    Clear All
+                </a>
+
+            </div>
 
         </form>
 
 
-        <!-- Users -->
         <section class="explore-users">
 
-            {% for person in users %}
-
-            <article class="user-card">
-
-                <div class="explore-avatar">
-
-                    {% if person.avatar %}
-                        <img src="{{ person.avatar.url }}" alt="Avatar">
-                    {% else %}
-                        <div class="avatar-placeholder">
-                            {{ person.username|first|upper }}
-                        </div>
-                    {% endif %}
-
-                </div>
-
-
-                <div class="user-card-info">
-
-                    <h3>
-                        <a href="{% url 'user_profile' person.username %}">
-                            {{ person.username }}
-                        </a>
-                    </h3>
-
-                    <p>
-                        {% if person.bio %}
-                            {{ person.bio|truncatechars:90 }}
-                        {% else %}
-                            No bio yet.
-                        {% endif %}
-                    </p>
-
-                    <small>
-                        <i class="fa-solid fa-users"></i>
-                        {{ person.followers_count }} followers
-                    </small>
-
-                </div>
-
-
-                <div class="user-card-actions">
-
-                    {% if person.id in following_ids %}
-
-                        <form method="POST" action="{% url 'follow_toggle' person.username %}">
-                            {% csrf_token %}
-                            <button type="submit" class="following-btn">
-                                Following
-                            </button>
-                        </form>
-
-                    {% else %}
-
-                        <form method="POST" action="{% url 'follow_toggle' person.username %}">
-                            {% csrf_token %}
-                            <button type="submit" class="follow-btn">
-                                <i class="fa-solid fa-plus"></i>
-                                Follow
-                            </button>
-                        </form>
-
-                    {% endif %}
-
-                </div>
-
-            </article>
-
-            {% empty %}
-
-            <div class="explore-empty">
-                <i class="fa-solid fa-users"></i>
-                <h3>No users found</h3>
-                <p>Try searching with another username.</p>
+            <div class="results-heading">
+                <h3>People</h3>
+                <p>Discover people on YourSpace.</p>
             </div>
 
-            {% endfor %}
+
+            <div id="searchResults">
+
+                {% for person in users %}
+
+                <article class="user-card">
+
+                    <div class="explore-avatar">
+
+                        {% if person.avatar %}
+
+                            <img src="{{ person.avatar.url }}" alt="Avatar">
+
+                        {% else %}
+
+                            <div class="avatar-placeholder">
+                                {{ person.username|first|upper }}
+                            </div>
+
+                        {% endif %}
+
+                    </div>
+
+
+                    <div class="user-card-info">
+
+                        <h3>
+                            <a href="{% url 'user_profile' person.username %}">
+                                {{ person.username }}
+                            </a>
+                        </h3>
+
+                        <p>
+
+                            {% if person.bio %}
+
+                                {{ person.bio|truncatechars:90 }}
+
+                            {% else %}
+
+                                No bio yet.
+
+                            {% endif %}
+
+                        </p>
+
+                        <small>
+                            <i class="fa-solid fa-users"></i>
+                            {{ person.followers_count }} followers
+                        </small>
+
+                    </div>
+
+
+                    <div class="user-card-actions">
+
+                        {% if person.id in following_ids %}
+
+                            <form
+                                method="POST"
+                                action="{% url 'follow_toggle' person.username %}"
+                            >
+                                {% csrf_token %}
+
+                                <button type="submit" class="following-btn">
+                                    Following
+                                </button>
+
+                            </form>
+
+                        {% else %}
+
+                            <form
+                                method="POST"
+                                action="{% url 'follow_toggle' person.username %}"
+                            >
+                                {% csrf_token %}
+
+                                <button type="submit" class="follow-btn">
+                                    <i class="fa-solid fa-plus"></i>
+                                    Follow
+                                </button>
+
+                            </form>
+
+                        {% endif %}
+
+                    </div>
+
+                </article>
+
+
+                {% empty %}
+
+                <div class="explore-empty">
+
+                    <i class="fa-solid fa-users"></i>
+
+                    <h3>No users found</h3>
+
+                    <p>
+                        Try changing your search or filters.
+                    </p>
+
+                </div>
+
+                {% endfor %}
+
+            </div>
 
         </section>
 
@@ -149,11 +414,116 @@
     <aside class="right-sidebar">
 
         <h3>Discover</h3>
-        <p>Find people, share ideas and build connections.</p>
+
+        <p>
+            Find people, share ideas and build connections.
+        </p>
 
     </aside>
 
 </div>
+
+
+<script>
+
+    const searchForm = document.getElementById('advancedSearchForm');
+    const searchInput = document.getElementById('searchInput');
+    const searchResults = document.getElementById('searchResults');
+
+    let searchController = null;
+
+    function updateSearchResults() {
+
+        if (searchController) {
+            searchController.abort();
+        }
+
+        searchController = new AbortController();
+
+        const formData = new FormData(searchForm);
+
+        const params = new URLSearchParams(formData);
+
+        fetch(`${searchForm.action}?${params.toString()}`, {
+            signal: searchController.signal
+        })
+
+        .then(response => {
+
+            if (!response.ok) {
+                throw new Error('Search request failed');
+            }
+
+            return response.text();
+
+        })
+
+        .then(html => {
+
+            const parser = new DOMParser();
+
+            const documentHTML = parser.parseFromString(
+                html,
+                'text/html'
+            );
+
+            const newResults = documentHTML.getElementById('searchResults');
+
+            if (newResults) {
+                searchResults.innerHTML = newResults.innerHTML;
+            }
+
+        })
+
+        .catch(error => {
+
+            if (error.name !== 'AbortError') {
+                console.error('Search error:', error);
+            }
+
+        });
+
+    }
+
+
+    let searchTimeout;
+
+
+    searchInput.addEventListener('input', function () {
+
+        clearTimeout(searchTimeout);
+
+        searchTimeout = setTimeout(() => {
+            updateSearchResults();
+        }, 300);
+
+    });
+
+
+    searchForm.querySelectorAll(
+        'select, input[type="date"], input[type="number"]'
+    ).forEach(input => {
+
+        input.addEventListener('change', function () {
+
+            updateSearchResults();
+
+        });
+
+    });
+
+
+    searchForm.addEventListener('submit', function (event) {
+
+        event.preventDefault();
+
+        clearTimeout(searchTimeout);
+
+        updateSearchResults();
+
+    });
+
+</script>
 
 </body>
 </html>

@@ -58,9 +58,9 @@
                     {% csrf_token %}
 
                     {% if is_following %}
-                    <button type="submit">Unfollow</button>
+                    <button class="btnF" type="submit">Unfollow</button>
                     {% else %}
-                    <button type="submit">Follow</button>
+                    <button class="btnF" type="submit">Follow</button>
                     {% endif %}
                 </form>
 
